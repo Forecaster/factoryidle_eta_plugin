@@ -2,6 +2,12 @@
 A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 Run either by copying main.js and paste in your browser console after each page load, or by adding it to Greasemonkey/Tampermonkey or similar to have it run automatically.
 
+1. Install script manager:
+ - [Tampermonkey](https://tampermonkey.net/) (Chrome)
+ - [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) (Firefox)
+2. Install script:
+ - [fi_eta.user.js](https://github.com/Forecaster/factoryidle_eta_plugin/blob/master/fi_eta.user.js)
+
 ### Changelog:
 
 #### 0.4
