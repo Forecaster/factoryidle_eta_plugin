@@ -21,6 +21,9 @@ sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
 
 ### Changelog:
 
+#### 0.6 \<HOTFIX>
+ - Fix number-parsing breaking with decimals
+
 #### 0.5
  - Add ability to change position of menu
  - Add support for more suffixes (List in readme)

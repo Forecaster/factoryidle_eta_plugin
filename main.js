@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FactoryIdle eta display
 // @namespace    https://github.com/Forecaster/factoryidle_eta_plugin
-// @version      0.5
+// @version      0.6
 // @description  A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 // @author       Forecaster
 // @match        http://factoryidle.com/
@@ -9,6 +9,8 @@
 // ==/UserScript==
 
 //Changelog:
+//0.6 <HOTFIX>
+// - Fix number-parsing breaking with decimals
 //0.5
 // - Add ability to change position of menu
 // - Add support for more suffixes (List in readme)
@@ -302,7 +304,7 @@
       target = target.replace(",", "");
       target = target.replace(" ", "");
       
-      var operator_pattern = /\d*([a-zA-Z]*)/;
+      var operator_pattern = /[\d\.]*([a-zA-Z]*)/;
       
       var power = 1;
       var operator = target.match(operator_pattern);
@@ -321,7 +323,7 @@
         }
       }
       
-      target = parseInt(target) * power;
+      target = parseFloat(target) * power;
       
       var ticks = document.getElementById("ticks").innerHTML;
       var money;
@@ -348,7 +350,7 @@
         }
       }
       
-      money = parseInt(money) * power;
+      money = parseFloat(money) * power;
       
       var incomes = document.getElementsByClassName(category);
       total = 0;
