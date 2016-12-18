@@ -25,6 +25,7 @@ sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
  - Add ability to change position of menu
  - Add support for more suffixes (List in readme)
  - Re-write script to trivialize adding more suffixes
+
 #### 0.4
  - Added support for research points
  - Broke non Use total Avg mode in the process, now permanently uses "Use Total Avg" since there wasn't really a difference without it anyway
