@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FactoryIdle eta display
 // @namespace    https://github.com/Forecaster/factoryidle_eta_plugin
-// @version      0.4
+// @version      0.5
 // @description  A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 // @author       Forecaster
 // @match        http://factoryidle.com/
@@ -9,6 +9,10 @@
 // ==/UserScript==
 
 //Changelog:
+//0.5
+// - Add ability to change position of menu
+// - Add support for more suffixes (List in readme)
+// - Re-write script to trivialize adding more suffixes
 //0.4
 // - Added support for research points
 // - Broke non Use total Avg mode in the process, now permanently uses "Use Total Avg" since there wasn't really a difference without it anyway
@@ -20,11 +24,39 @@
 //0.2
 // - Fixed calculation being incorrect unless "Use Total Avg" is enabled
 
-console.warn("Script loaded");
-
 (function() {
   'use strict';
+  var script_name = "FactoryIdle eta display";
 
+  function log(message)
+  {
+    console.info("[" + script_name + "] " + message);
+  }
+  
+  log("Script Loaded");
+  
+  //If you know what you're doing you can edit this to add more operators:
+  var operators = [
+    {id: "thousand",    power: 1000,                  keywords: ["K", "k", "kilo", "thousand", "tho"]},
+    {id: "million",     power: 1000000,               keywords: ["M", "m", "mega", "million", "mil"]},
+    {id: "billion",     power: 1000000000,            keywords: ["G", "g", "giga", "b", "billion", "bil"]},
+    {id: "trillion",    power: 1000000000000,         keywords: ["T", "t", "tera", "trillion", "tri"]},
+    {id: "quadrillion", power: 1000000000000000,      keywords: ["P", "p", "peta", "quadrillion", "qua"]},
+    {id: "quintillion", power: 1000000000000000000,   keywords: ["E", "e", "exa", "quintillion", "qui"]},
+    {id: "sextillion",  power: 1000000000000000000000,keywords: ["Z", "z", "zetta", "sextillion", "sex"]},
+  ];
+  
+  if (!String.prototype.format)
+  {
+    String.prototype.format = function ()
+    {
+      var args = arguments;
+      return this.replace(/{(\d+)}/g, function (match, number)
+      {
+        return typeof args[number] != 'undefined' ? args[number] : match;
+      });
+    };
+  }
 
   function isset(variable)
   {
@@ -122,16 +154,44 @@ console.warn("Script loaded");
       settings[sub][setting] = event.target.checked;
   }
 
+  function update_position(event)
+  {
+    if (event.target.value == "top_left")
+    {
+      container.style.top = "20px";
+      container.style.left = "20px";
+      container.style.right = null;
+      container.style.bottom = null;
+    }
+    else if (event.target.value == "top_right")
+    {
+      container.style.top = "20px";
+      container.style.left = null;
+      container.style.right = "20px";
+      container.style.bottom = null;
+    }
+    else if (event.target.value == "bottom_left")
+    {
+      container.style.top = null;
+      container.style.left = "20px";
+      container.style.right = null;
+      container.style.bottom = "20px";
+    }
+    else if (event.target.value == "bottom_right")
+    {
+      container.style.top = null;
+      container.style.left = null;
+      container.style.right = "20px";
+      container.style.bottom = "2opx";
+    }
+  }
+
   var settings = {
     money: {
-      use_total_average: true,
-      calculate_average: true,
-      average_precision: 20,
+      generate_timer_link: true,
     },
     research: {
-      use_total_average: true,
-      calculate_average: true,
-      average_precision: 20,
+      generate_timer_link: true,
     }
   };
 
@@ -139,6 +199,15 @@ console.warn("Script loaded");
   container.style.position = "absolute";
   container.style.top = "20px";
   container.style.right = "20px";
+
+  var position_switcher = document.createElement("div");
+  var selecter = document.createElement("select");
+  selecter.onchange = update_position;
+  selecter.innerHTML = "<option value='top_left'>Top Left</option>"+
+                       "<option value='top_right'>Top Right</option>"+
+                       "<option value='bottom_left'>Bottom Left</option>"+
+                       "<option value='bottom_right'>Bottom Right</option>";
+  position_switcher.appendChild(selecter);
 
   var money_container = document.createElement("div");
   money_container.style.backgroundColor = "white";
@@ -149,6 +218,9 @@ console.warn("Script loaded");
   var money_display = document.createElement("div");
   money_display.id = "calc_money_display";
 
+  var money_timer_link = document.createElement("div");
+  money_timer_link.id = "calc_money_timer_link";
+
   var money_input = document.createElement("div");
   money_input.innerHTML = "<input id='calc_money_goal' placeholder='Target (eg 5 mil or 5 million)' />";
 
@@ -157,6 +229,9 @@ console.warn("Script loaded");
 
   var money_option2 = document.createElement("div");
   money_option2.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-setting='calculate_average' class='setting' style='cursor: pointer' title='Calculates averages from the total of the individual incomes to fluctuate less while still being more accurate. Does not affect \"Use Total Avg\"'/> Calculate Average</label>";
+
+  var money_option3 = document.createElement("div");
+  money_option3.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-disabled='true' data-setting='generate_timer_link' class='setting' style='cursor: pointer' title='Generates a link to a third party timer that counts down to your goal.'/> Generate Timer Link</label>";
 
   var rs_container = document.createElement("div");
   rs_container.style.backgroundColor = "white";
@@ -167,6 +242,9 @@ console.warn("Script loaded");
   var rs_display = document.createElement("div");
   rs_display.id = "calc_research_display";
 
+  var rs_timer_link = document.createElement("div");
+  rs_timer_link.id = "calc_research_timer_link";
+
   var rs_input = document.createElement("div");
   rs_input.innerHTML = "<input id='calc_research_goal' placeholder='Target (eg 5 mil or 5 million)' />";
 
@@ -176,26 +254,29 @@ console.warn("Script loaded");
   var rs_option2 = document.createElement("div");
   rs_option2.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-setting='calculate_average' class='setting' style='cursor: pointer' title='Calculates averages from the total of the individual incomes to fluctuate less while still being more accurate. Does not affect \"Use Total Avg\"'/> Calculate Average</label>";
 
+  var rs_option3 = document.createElement("div");
+  rs_option3.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-disabled='true' data-setting='generate_timer_link' class='setting' style='cursor: pointer' title='Generates a link to a third party timer that counts down to your goal.'/> Generate Timer Link</label>";
+
   money_container.appendChild(money_input);
   money_container.appendChild(money_display);
-  //money_container.appendChild(money_option1);
-  //money_container.appendChild(money_option2);
+  money_container.appendChild(money_timer_link);
+  money_container.appendChild(money_option3);
 
   rs_container.appendChild(rs_input);
   rs_container.appendChild(rs_display);
-  //rs_container.appendChild(rs_option1);
-  //rs_container.appendChild(rs_option2);
+  rs_container.appendChild(rs_timer_link);
+  rs_container.appendChild(rs_option3);
 
+  container.appendChild(position_switcher);
   container.appendChild(money_container);
   container.appendChild(rs_container);
 
   document.body.appendChild(container);
 
+  var timer_url = "https://duckduckgo.com/?q=timer+{0}+seconds&ia=timer";
   var i = 0;
   var total = 0;
-  var income_log = [];
 
-  console.log("Register function");
   function calculateTime(category, output)
   {
     if (typeof category == "undefined" || category === null)
@@ -204,6 +285,11 @@ console.warn("Script loaded");
       output = document.getElementById("calc_money_display");
     else
       output = document.getElementById(output);
+    var timer_link_output;
+    if (category == "money")
+      timer_link_output = document.getElementById("calc_money_timer_link");
+    else if (category == "research")
+      timer_link_output = document.getElementById("calc_research_timer_link");
     if (document.getElementById("factorySelection") !== null)
     {
       var target = document.getElementById("calc_" + category + "_goal").value;
@@ -214,31 +300,28 @@ console.warn("Script loaded");
       }
       target = target.replace(",", "");
       target = target.replace(" ", "");
-
-      if (target.indexOf("m") >= 0 || target.indexOf("mil") >= 0 || target.indexOf("million") >= 0)
+      
+      var operator_pattern = /\d*([a-zA-Z]*)/;
+      
+      var power = 1;
+      var operator = target.match(operator_pattern);
+      
+      if (operator.length == 2)
       {
-        target = target.replace("million", "");
-        target = target.replace("mil", "");
-        target = target.replace("m", "");
-        target = parseFloat(target);
-        target *= 1000000;
+        operator = operator[1];
+      
+        for (var i = 0; i < operators.length; i++)
+        {
+          if (operators[i].keywords.indexOf(operator) >= 0)
+          {
+            power = operators[i].power;
+            i = 100000;
+          }
+        }
       }
-      else if (target.indexOf("b") >= 0 || target.indexOf("bil") >= 0 || target.indexOf("billion") >= 0)
-      {
-        target = target.replace("billion", "");
-        target = target.replace("bil", "");
-        target = target.replace("b", "");
-        target = parseFloat(target);
-        target *= 1000000000;
-      }
-      else if (target.indexOf("t") >= 0 || target.indexOf("tri") >= 0 || target.indexOf("trillion") >= 0)
-      {
-        target = target.replace("trillion", "");
-        target = target.replace("tri", "");
-        target = target.replace("t", "");
-        target *= 1000000000000;
-      }
-      console.info("Target: " + target + " " + category);
+      
+      target = parseInt(target) * power;
+      
       var ticks = document.getElementById("ticks").innerHTML;
       var money;
       if (category == "money")
@@ -246,80 +329,38 @@ console.warn("Script loaded");
       else if (category == "research")
         money = document.getElementById("researchPoints").innerHTML;
       money = money.replace(" ", "");
-      if (money.indexOf("million") >= 0)
+      
+      power = 1;
+      operator = money.match(operator_pattern);
+      
+      if (operator.length == 2)
       {
-        money = money.replace("million", "");
-        money = parseFloat(money);
-        money *= 1000000;
-      }
-      else if (money.indexOf("billion") >= 0)
-      {
-        money = money.replace("billion", "");
-        money = parseFloat(money);
-        money *= 1000000000;
-      }
-      else if (money.indexOf("trillion") >= 0)
-      {
-        money = money.replace("trillion", "");
-        money = parseFloat(money);
-        money *= 1000000000000;
-      }
-      console.info("Current: " + money + " " + category);
-      if (!settings[category].use_total_average)
-      {
-        var incomes = document.getElementsByClassName(category);
-        total = 0;
-        for (i = 2; i < incomes.length; i++)
+        operator = operator[1];
+        
+        for (var h = 0; h < operators.length; h++)
         {
-          var income = incomes[i].innerHTML.replace(" ", "").replace("+", "");
-
-          if (income > 0)
+          if (operators[h].keywords.indexOf(operator) >= 0)
           {
-            var old_total = total;
-            total = parseFloat(total) + parseFloat(income);
+            power = operators[h].power;
+            h = 1000000;
           }
         }
-
-        if (settings[category].calculate_average)
-        {
-          var average_total = 0;
-          income_log.push(total);
-          if (income_log.length > settings.average_precision)
-            income_log.shift();
-          for (var p = 0; p < income_log.length; p++)
-          {
-            average_total += income_log[p];
-          }
-          total = average_total / income_log.length;
-        }
       }
-      else
+      
+      money = parseInt(money) * power;
+      
+      var incomes = document.getElementsByClassName(category);
+      total = 0;
+      for (i = 2; i < incomes.length; i++)
       {
-        if (category == "money")
-          total = document.getElementById("income").innerHTML;
-        else if (category == "research")
-          total = document.getElementById("researchIncome").innerHTML;
-        total = total.replace(" ", "");
-        if (total.indexOf("million") >= 0)
+        var income = incomes[i].innerHTML.replace(" ", "").replace("+", "");
+
+        if (income > 0)
         {
-          total = total.replace("million", "");
-          total = parseFloat(total);
-          total *= 1000000;
-        }
-        else if (total.indexOf("billion") >= 0)
-        {
-          total = total.replace("billion", "");
-          total = parseFloat(total);
-          total *= 1000000000;
-        }
-        else if (total.indexOf("trillion") >= 0)
-        {
-          total = total.replace("trillion", "");
-          total = parseFloat(total);
-          total *= 1000000000000;
+          var old_total = total;
+          total = parseFloat(total) + parseFloat(income);
         }
       }
-      console.info("Income: " + total);
       var incomeS = ticks * total;
       var difference = target - money;
       if (!isNaN(difference))
@@ -328,6 +369,7 @@ console.warn("Script loaded");
         {
           var seconds = difference / incomeS;
           output.innerHTML = time_string(parse_seconds(seconds), true, 2);
+          timer_link_output.innerHTML = "<a href='" + timer_url.format(seconds) + "'>Timer</a>";
         }
         else
           output.innerHTML = "Goal reached!";
@@ -348,7 +390,7 @@ console.warn("Script loaded");
     setting_toggles[b].onchange = update_setting;
   }
 
-  console.info("Register interval");
+  log("Register interval");
   setInterval(function() {calculateTime("money", "calc_money_display");}, 1000);
   setInterval(function() {calculateTime("research", "calc_research_display");}, 1000);
 })();

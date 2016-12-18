@@ -7,9 +7,22 @@ Run either by copying the contents of fi_eta.user.js and paste in your browser c
  - [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) (Firefox)
 2. Install script:
  - [fi_eta.user.js](https://github.com/Forecaster/factoryidle_eta_plugin/raw/master/fi_eta.user.js)
+ 
+### Suffixes:
+thousand:    ["K", "k", "kilo", "thousand", "tho"]
+million:     ["M", "m", "mega", "million", "mil"]
+billion:     ["G", "g", "giga", "b", "billion", "bil"]
+trillion:    ["T", "t", "tera", "trillion", "tri"]
+quadrillion: ["P", "p", "peta", "quadrillion", "qua"]
+quintillion: ["E", "e", "exa", "quintillion", "qui"]
+sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
 
 ### Changelog:
 
+#### 0.5
+ - Add ability to change position of menu
+ - Add support for more suffixes (List in readme)
+ - Re-write script to trivialize adding more suffixes
 #### 0.4
  - Added support for research points
  - Broke non Use total Avg mode in the process, now permanently uses "Use Total Avg" since there wasn't really a difference without it anyway
