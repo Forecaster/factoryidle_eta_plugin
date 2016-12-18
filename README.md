@@ -9,6 +9,7 @@ Run either by copying the contents of fi_eta.user.js and paste in your browser c
  - [fi_eta.user.js](https://github.com/Forecaster/factoryidle_eta_plugin/raw/master/fi_eta.user.js)
  
 ### Suffixes:
+```
 thousand:    ["K", "k", "kilo", "thousand", "tho"]
 million:     ["M", "m", "mega", "million", "mil"]
 billion:     ["G", "g", "giga", "b", "billion", "bil"]
@@ -16,6 +17,7 @@ trillion:    ["T", "t", "tera", "trillion", "tri"]
 quadrillion: ["P", "p", "peta", "quadrillion", "qua"]
 quintillion: ["E", "e", "exa", "quintillion", "qui"]
 sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
+```
 
 ### Changelog:
 
