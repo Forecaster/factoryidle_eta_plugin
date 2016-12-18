@@ -12,6 +12,7 @@
 //0.5
 // - Add ability to change position of menu
 // - Add support for more suffixes (List in readme)
+// - Add timer feature (Via duckduckgo.com) will play a sound when timer expires
 // - Re-write script to trivialize adding more suffixes
 //0.4
 // - Added support for research points
