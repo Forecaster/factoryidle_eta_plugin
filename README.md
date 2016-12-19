@@ -1,5 +1,5 @@
 # factoryidle_eta_plugin
-A plugin for FactoryIdle.com that displays time until a money and/or research goal is reached based on current ammount and income.
+A plugin for FactoryIdle.com that displays time until a money and/or research goal is reached based on current balance and income.
 Run either by copying the contents of fi_eta.user.js and paste in your browser console after each page load, or by adding it to Greasemonkey/Tampermonkey or similar to have it run automatically.
 
 1. Install script manager:
