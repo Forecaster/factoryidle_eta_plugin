@@ -21,6 +21,11 @@ sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
 
 ### Changelog:
 
+#### 0.7
+ - Change 'Go to overview' to 'Visit Factory Screen to update!'
+ - Remove 'timer link' option that doesn't do anything anyway
+ - Hopefully fix displaying 'Infinityy' sometimes
+
 #### 0.6 \<HOTFIX>
  - Fix number-parsing breaking with decimals
 
