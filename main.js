@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FactoryIdle eta display
 // @namespace    https://github.com/Forecaster/factoryidle_eta_plugin
-// @version      0.6
+// @version      0.7
 // @description  A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 // @author       Forecaster
 // @match        http://factoryidle.com/
