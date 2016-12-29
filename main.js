@@ -9,6 +9,10 @@
 // ==/UserScript==
 
 //Changelog:
+//0.7
+// - Change 'Go to overview' to 'Visit Factory Screen to update!'
+// - Remove 'timer link' option that doesn't do anything anyway
+// - Hopefully fix displaying 'Infinityy' sometimes
 //0.6 <HOTFIX>
 // - Fix number-parsing breaking with decimals
 //0.5
@@ -227,14 +231,8 @@
   var money_input = document.createElement("div");
   money_input.innerHTML = "<input id='calc_money_goal' placeholder='Target (eg 5 mil or 5 million)' />";
 
-  var money_option1 = document.createElement("div");
-  money_option1.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-disabled='true' data-setting='use_total_average' class='setting' style='cursor: pointer' title='Uses total average, which fluctuates a lot less.'/> Use Total Avg</label>";
-
-  var money_option2 = document.createElement("div");
-  money_option2.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-setting='calculate_average' class='setting' style='cursor: pointer' title='Calculates averages from the total of the individual incomes to fluctuate less while still being more accurate. Does not affect \"Use Total Avg\"'/> Calculate Average</label>";
-
-  var money_option3 = document.createElement("div");
-  money_option3.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-disabled='true' data-setting='generate_timer_link' class='setting' style='cursor: pointer' title='Generates a link to a third party timer that counts down to your goal.'/> Generate Timer Link</label>";
+  //var money_option1 = document.createElement("div");
+  //money_option1.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='money' data-disabled='true' data-setting='use_total_average' class='setting' style='cursor: pointer' title='Uses total average, which fluctuates a lot less.'/> Use Total Avg</label>";
 
   var rs_container = document.createElement("div");
   rs_container.style.backgroundColor = "white";
@@ -251,24 +249,18 @@
   var rs_input = document.createElement("div");
   rs_input.innerHTML = "<input id='calc_research_goal' placeholder='Target (eg 5 mil or 5 million)' />";
 
-  var rs_option1 = document.createElement("div");
-  rs_option1.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-disabled='true' data-setting='use_total_average' class='setting' style='cursor: pointer' title='Uses total average, which fluctuates a lot less.'/> Use Total Avg</label>";
-
-  var rs_option2 = document.createElement("div");
-  rs_option2.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-setting='calculate_average' class='setting' style='cursor: pointer' title='Calculates averages from the total of the individual incomes to fluctuate less while still being more accurate. Does not affect \"Use Total Avg\"'/> Calculate Average</label>";
-
-  var rs_option3 = document.createElement("div");
-  rs_option3.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-disabled='true' data-setting='generate_timer_link' class='setting' style='cursor: pointer' title='Generates a link to a third party timer that counts down to your goal.'/> Generate Timer Link</label>";
+  //var rs_option1 = document.createElement("div");
+  //rs_option1.innerHTML = "<label style='cursor: pointer'><input type='checkbox' checked data-setting-sub='research' data-disabled='true' data-setting='use_total_average' class='setting' style='cursor: pointer' title='Uses total average, which fluctuates a lot less.'/> Use Total Avg</label>";
 
   money_container.appendChild(money_input);
   money_container.appendChild(money_display);
   money_container.appendChild(money_timer_link);
-  money_container.appendChild(money_option3);
+  //money_container.appendChild(money_option1);
 
   rs_container.appendChild(rs_input);
   rs_container.appendChild(rs_display);
   rs_container.appendChild(rs_timer_link);
-  rs_container.appendChild(rs_option3);
+  //rs_container.appendChild(rs_option1);
 
   container.appendChild(position_switcher);
   container.appendChild(money_container);
@@ -370,9 +362,16 @@
       {
         if (difference > 0)
         {
-          var seconds = difference / incomeS;
-          output.innerHTML = time_string(parse_seconds(seconds), true, 2);
-          timer_link_output.innerHTML = "<a href='" + timer_url.format(seconds) + "'>Timer</a>";
+          if (incomeS > 0)
+          {
+            var seconds = difference / incomeS;
+            output.innerHTML = time_string(parse_seconds(seconds), true, 2);
+            //timer_link_output.innerHTML = "<a href='" + timer_url.format(seconds) + "'>Timer</a>";
+          }
+          else
+          {
+            output.innerHTML = "No income!";
+          }
         }
         else
           output.innerHTML = "Goal reached!";
@@ -383,7 +382,7 @@
       }
     }
     else
-      output.innerHTML = "Go to overview";
+      output.innerHTML = "Visit Factory Screen to update!";
   }
 
   var setting_toggles = document.getElementsByClassName("setting");
