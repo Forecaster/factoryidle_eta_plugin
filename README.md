@@ -21,6 +21,10 @@ sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
 
 ### Changelog:
 
+#### 0.8
+ - Fixed calculations for individual factories to be correct (used to discard suffixes wrongly which caused terrible inaccuracy)
+ - Takes into account paused factories correctly
+
 #### 0.7
  - Change 'Go to overview' to 'Visit Factory Screen to update!'
  - Remove 'timer link' option that doesn't do anything anyway
