@@ -21,6 +21,12 @@ sextillion:  ["Z", "z", "zetta", "sextillion", "sex"]
 
 ### Changelog:
 
+#### 0.9.1
+ - Fix critical derp
+
+#### 0.9
+ - Fixed negative numbers not being matched
+
 #### 0.8
  - Fixed calculations for individual factories to be correct (used to discard suffixes wrongly which caused terrible inaccuracy)
  - Takes into account paused factories correctly
