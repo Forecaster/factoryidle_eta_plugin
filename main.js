@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FactoryIdle eta display
 // @namespace    https://github.com/Forecaster/factoryidle_eta_plugin
-// @version      0.8
+// @version      0.9
 // @description  A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 // @author       Forecaster
 // @match        http://factoryidle.com/
@@ -9,6 +9,8 @@
 // ==/UserScript==
 
 //Changelog:
+//0.9
+// - Fixed negative numbers not being matched
 //0.8
 // - Fixed calculations for individual factories to be correct (used to discard suffixes wrongly which caused terrible inaccuracy)
 // - Takes into account paused factories correctly
@@ -37,7 +39,7 @@
 (function() {
   'use strict';
   var script_name = "FactoryIdle eta display";
-  var version = '0.8';
+  var version = '0.9';
 
   function log(message)
   {
@@ -203,7 +205,7 @@
    */
   function parse_suffixes_for(input)
   {
-    var operator_pattern = /[\d.]*([a-zA-Z]*)/;
+    var operator_pattern = /[-\d.]*([a-zA-Z]*)/;
 
     var power = 1;
     var operator = input.match(operator_pattern);
@@ -356,7 +358,6 @@
         var thisButton = factoryButtons[i];
         var button_income = 0;
 
-        console.warn(thisButton.children[1].innerHTML);
         if (thisButton.children[1].innerHTML == "&nbsp;"  && thisButton.children.hasOwnProperty(6) && thisButton.children[6].innerHTML == "SELECT")
         {
           if (category == "money")
@@ -366,11 +367,6 @@
           else if (category == "research")
             button_income = parse_suffixes_for(thisButton.children[5].innerHTML.replace(" ","").replace(",","").replace("+",""));
         }
-        console.warn("Factory " + i + " income: " + button_income);
-        if (button_income > 0)
-          total = total + button_income;
-        else if (button_income < 0)
-          total = total - button_income;
       }
 
       //console.info("Total income: " + total);
