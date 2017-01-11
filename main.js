@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FactoryIdle eta display
 // @namespace    https://github.com/Forecaster/factoryidle_eta_plugin
-// @version      0.9
+// @version      0.9.1
 // @description  A plugin for FactoryIdle.com that displays time until a money goal is reached based on current income
 // @author       Forecaster
 // @match        http://factoryidle.com/
@@ -9,6 +9,8 @@
 // ==/UserScript==
 
 //Changelog:
+//0.9.1
+// - Fix critical derp
 //0.9
 // - Fixed negative numbers not being matched
 //0.8
@@ -39,7 +41,7 @@
 (function() {
   'use strict';
   var script_name = "FactoryIdle eta display";
-  var version = '0.9';
+  var version = '0.9.1';
 
   function log(message)
   {
@@ -367,6 +369,8 @@
           else if (category == "research")
             button_income = parse_suffixes_for(thisButton.children[5].innerHTML.replace(" ","").replace(",","").replace("+",""));
         }
+        console.warn("Factory " + i + " income: " + button_income);
+        total = total + button_income;
       }
 
       //console.info("Total income: " + total);
